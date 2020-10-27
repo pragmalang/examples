@@ -1,0 +1,23 @@
+config { projectName = "my_first_app" }
+
+import "./hooks.js" as hooks { runtime = "nodejs:14" }
+
+@user
+@onWrite(function: hooks.validateUser)
+@onWrite(function: hooks.setFullName)
+@1 model User {
+  @1 username: String @publicCredential @primary
+  @2 password: String @secretCredential
+  @3 firstName: String
+  @4 lastName: String
+  @5 fullName: String
+  @6 age: Int
+}
+
+allow CREATE User
+deny SET_ON_CREATE User.fullName
+
+role User {
+  allow [READ, UPDATE] self
+  allow READ User
+}
